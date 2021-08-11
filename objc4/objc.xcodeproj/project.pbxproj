@@ -205,6 +205,7 @@
 /* Begin PBXFileReference section */
 		2AAA0B5326C3B0A1006EF095 /* objc_class.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = objc_class.h; sourceTree = "<group>"; };
 		2AAA0B5426C3B161006EF095 /* catch_t.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = catch_t.h; sourceTree = "<group>"; };
+		2AAA0B5526C3BFD6006EF095 /* objc_object.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = objc_object.h; sourceTree = "<group>"; };
 		393CEABF0DC69E3E000B69DE /* objc-references.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "objc-references.mm"; path = "runtime/objc-references.mm"; sourceTree = "<group>"; };
 		393CEAC50DC69E67000B69DE /* objc-references.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "objc-references.h"; path = "runtime/objc-references.h"; sourceTree = "<group>"; };
 		39ABD71F12F0B61800D1054C /* objc-weak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "objc-weak.h"; path = "runtime/objc-weak.h"; sourceTree = "<group>"; };
@@ -546,12 +547,13 @@
 				75A9504E202BAA0300D7D56F /* objc-locks-new.h */,
 				75A95052202BAC4100D7D56F /* objc-lockdebug.h */,
 				75A95050202BAA9A00D7D56F /* objc-locks.h */,
+				2AAA0B5326C3B0A1006EF095 /* objc_class.h */,
+				2AAA0B5526C3BFD6006EF095 /* objc_object.h */,
 				7593EC57202248DF0046AB96 /* objc-object.h */,
 				831C85D30E10CF850066E64C /* objc-os.h */,
 				838485DC0D6D68A200CEA253 /* objc-private.h */,
 				393CEAC50DC69E67000B69DE /* objc-references.h */,
 				838485E00D6D68A200CEA253 /* objc-runtime-new.h */,
-				2AAA0B5326C3B0A1006EF095 /* objc_class.h */,
 				2AAA0B5426C3B161006EF095 /* catch_t.h */,
 				83BE02E70FCCB24D00661494 /* objc-runtime-old.h */,
 				838485E50D6D68A200CEA253 /* objc-sel-set.h */,

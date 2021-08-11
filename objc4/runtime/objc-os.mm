@@ -450,7 +450,7 @@ void objc_addLoadImageFunc(objc_func_loadImage _Nonnull func) {
 #else
 #include "objc-file-old.h"
 #endif
-
+//映射镜像
 void 
 map_images_nolock(unsigned mhCount, const char * const mhPaths[],
                   const struct mach_header * const mhdrs[])
@@ -921,21 +921,28 @@ void _objc_atfork_child()
 
 void _objc_init(void)
 {
+    //参考:https://www.jianshu.com/p/e600839168b5
     static bool initialized = false;
     if (initialized) return;
     initialized = true;
     
     // fixme defer initialization until an objc-using image is found?
+    //读取环境变量,就是xcode scheme里面设置的那些环境变量
     environ_init();
+    //注册线程数据析构函数
     tls_init();
+    //调用C++的静态构造函数
     static_init();
+    //初始化运行时,具体干啥不清楚
     runtime_init();
+    //初始化错误处理机制
     exception_init();
 #if __OBJC2__
     cache_t::init();
 #endif
+    //这一行注释掉也没问题
     _imp_implementationWithBlock_init();
-
+    //dyld映射完成之后回调  map_images，dyld需要initimage 的时候调用load_images,unmap_image可能是在进程销毁的时候调用
     _dyld_objc_notify_register(&map_images, load_images, unmap_image);
 
 #if __OBJC2__

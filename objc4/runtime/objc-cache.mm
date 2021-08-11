@@ -1060,7 +1060,7 @@ void cache_t::init()
     while (objc_restartableRanges[count].location) {
         count++;
     }
-
+    //restartable range不知道指的啥
     kr = task_restartable_ranges_register(mach_task_self(),
                                           objc_restartableRanges, count);
     if (kr == KERN_SUCCESS) return;

@@ -3119,7 +3119,7 @@ void
 map_images(unsigned count, const char * const paths[],
            const struct mach_header * const mhdrs[])
 {
-    mutex_locker_t lock(runtimeLock);
+    mutex_locker_t lock(runtimeLock);//先上个锁
     return map_images_nolock(count, paths, mhdrs);
 }
 
@@ -3215,14 +3215,14 @@ load_images(const char *path __unused, const struct mach_header *mh)
 {
     if (!didInitialAttachCategories && didCallDyldNotifyRegister) {
         didInitialAttachCategories = true;
-        loadAllCategories();
+        loadAllCategories();//加载所有的分类
     }
 
     // Return without taking locks if there are no +load methods here.
-    if (!hasLoadMethods((const headerType *)mh)) return;
+    if (!hasLoadMethods((const headerType *)mh)) return;//如果没有定义+load方法就返回
 
     recursive_mutex_locker_t lock(loadMethodLock);
-
+    
     // Discover load methods
     {
         mutex_locker_t lock2(runtimeLock);
@@ -3230,7 +3230,7 @@ load_images(const char *path __unused, const struct mach_header *mh)
     }
 
     // Call +load methods (without runtimeLock - re-entrant)
-    call_load_methods();
+    call_load_methods();//调用所有的+load方法
 }
 
 
@@ -3554,6 +3554,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
 
         // Disable non-pointer isa if the app has a __DATA,__objc_rawisa section
         // New apps that load old extensions may need this.
+        //1.禁用非指针型ISA, 条件是判断 mach-o 是否含有 "__DATA,__objc_rawisa"段，新app加载旧的扩展的场景会有这种情况
         for (EACH_HEADER) {
             if (hi->mhdr()->filetype != MH_EXECUTE) continue;
             unsigned long size;
@@ -3573,7 +3574,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
         if (DisableTaggedPointers) {
             disableTaggedPointers();
         }
-        
+        //启动TaggedPointer 的混淆器,这个是啥？
         initializeTaggedPointerObfuscator();
 
         if (PrintConnecting) {
@@ -3585,6 +3586,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
         // 4/3 is NXMapTable's load factor
         int namedClassesSize = 
             (isPreoptimized() ? unoptimizedTotalClasses : totalClasses) * 4 / 3;
+        //什么鬼?mapTable是啥？
         gdb_objc_realized_classes =
             NXCreateMapTable(NXStrValueMapPrototype, namedClassesSize);
 
@@ -3592,6 +3594,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
     }
 
     // Fix up @selector references
+    //2.修复selector 引用
     static size_t UnfixedSelectors;
     {
         mutex_locker_t lock(selLock);
@@ -3615,7 +3618,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
 
     // Discover classes. Fix up unresolved future classes. Mark bundle classes.
     bool hasDyldRoots = dyld_shared_cache_some_image_overridden();
-
+    //3.读取类信息,重要!
     for (EACH_HEADER) {
         if (! mustReadClasses(hi, hasDyldRoots)) {
             // Image is sufficiently optimized that we need not call readClass()
@@ -3664,7 +3667,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
     }
 
     ts.log("IMAGE TIMES: remap classes");
-
+    //4.修复旧的消息发送问题
 #if SUPPORT_FIXUP
     // Fix up old objc_msgSend_fixup call sites
     for (EACH_HEADER) {
@@ -3685,6 +3688,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
 
 
     // Discover protocols. Fix up protocol refs.
+    //5.读取协议
     for (EACH_HEADER) {
         extern objc_class OBJC_CLASS_$_Protocol;
         Class cls = (Class)&OBJC_CLASS_$_Protocol;
@@ -3716,10 +3720,11 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
     }
 
     ts.log("IMAGE TIMES: discover protocols");
-
+    //6.修复协议引用
     // Fix up @protocol references
     // Preoptimized images may have the right 
     // answer already but we don't know for sure.
+    
     for (EACH_HEADER) {
         // At launch time, we know preoptimized image refs are pointing at the
         // shared cache definition of a protocol.  We can skip the check on
@@ -3746,13 +3751,13 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
     }
 
     ts.log("IMAGE TIMES: discover categories");
-
+    //7.处理分类
     // Category discovery MUST BE Late to avoid potential races
     // when other threads call the new category code before
     // this thread finishes its fixups.
 
     // +load handled by prepare_load_methods()
-
+    
     // Realize non-lazy classes (for +load methods and static instances)
     for (EACH_HEADER) {
         classref_t const *classlist = hi->nlclslist(&count);
@@ -3772,7 +3777,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
                 // We can't disallow all Swift classes because of
                 // classes like Swift.__EmptyArrayStorage
             }
-            realizeClassWithoutSwift(cls, nil);
+            realizeClassWithoutSwift(cls, nil);//实现非swift 类
         }
     }
 
@@ -3797,7 +3802,7 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
         realizeAllClasses();
     }
 
-
+    //打印预先优化的统计信息
     // Print preoptimization statistics
     if (PrintPreopt) {
         static unsigned int PreoptTotalMethodLists;
@@ -7977,11 +7982,11 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
     size = cls->instanceSize(extraBytes);
     if (outAllocatedSize) *outAllocatedSize = size;
 
-    id obj;
+    objc_class* obj;
     if (zone) {
-        obj = (id)malloc_zone_calloc((malloc_zone_t *)zone, 1, size);
+        obj = (objc_class*)malloc_zone_calloc((malloc_zone_t *)zone, 1, size);
     } else {
-        obj = (id)calloc(1, size);
+        obj = (objc_class*)calloc(1, size);
     }
     if (slowpath(!obj)) {
         if (construct_flags & OBJECT_CONSTRUCT_CALL_BADALLOC) {
@@ -7999,11 +8004,11 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
     }
 
     if (fastpath(!hasCxxCtor)) {
-        return obj;
+        return (id)obj;
     }
 
     construct_flags |= OBJECT_CONSTRUCT_FREE_ONFAILURE;
-    return object_cxxConstructFromClass(obj, cls, construct_flags);
+    return (id)object_cxxConstructFromClass((id)obj, cls, construct_flags);
 }
 
 id
