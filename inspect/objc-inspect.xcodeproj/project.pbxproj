@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		33B571A71FE3A49100FCE649 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B571A61FE3A49100FCE649 /* main.c */; };
+		2A1702E22694087700ABC2F6 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A1702E12694087600ABC2F6 /* Person.m */; };
+		33B571A71FE3A49100FCE649 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 33B571A61FE3A49100FCE649 /* main.m */; };
 		C1F83156243DDC4400E16D08 /* libobjc.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C1F83155243DDC4400E16D08 /* libobjc.A.dylib */; };
 		C1F83157243DDC4400E16D08 /* libobjc.A.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = C1F83155243DDC4400E16D08 /* libobjc.A.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -36,10 +37,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2A1702DC2693FEA300ABC2F6 /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		2A1702E12694087600ABC2F6 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		330CB3961FEB7B5E001FD41C /* base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base.h; sourceTree = "<group>"; };
 		330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "objc-inspect.xcconfig"; sourceTree = "<group>"; };
 		338049DB1FE3CAAE003488DC /* objc-inspect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "objc-inspect"; sourceTree = BUILT_PRODUCTS_DIR; };
-		33B571A61FE3A49100FCE649 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		33B571A61FE3A49100FCE649 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C1F83155243DDC4400E16D08 /* libobjc.A.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libobjc.A.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -55,6 +58,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2A1702DB2693FE9000ABC2F6 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				2A1702DC2693FEA300ABC2F6 /* Person.h */,
+				2A1702E12694087600ABC2F6 /* Person.m */,
+			);
+			path = Test;
+			sourceTree = "<group>";
+		};
 		335562AD1FE3A17F00BD601B = {
 			isa = PBXGroup;
 			children = (
@@ -68,8 +80,9 @@
 		33B571A51FE3A49100FCE649 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				2A1702DB2693FE9000ABC2F6 /* Test */,
 				330CB3961FEB7B5E001FD41C /* base.h */,
-				33B571A61FE3A49100FCE649 /* main.c */,
+				33B571A61FE3A49100FCE649 /* main.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -141,7 +154,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				33B571A71FE3A49100FCE649 /* main.c in Sources */,
+				2A1702E22694087700ABC2F6 /* Person.m in Sources */,
+				33B571A71FE3A49100FCE649 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

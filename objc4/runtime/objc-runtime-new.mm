@@ -7969,8 +7969,8 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
     ASSERT(cls->isRealized());
 
     // Read class's info bits all at once for performance
-    bool hasCxxCtor = cxxConstruct && cls->hasCxxCtor();
-    bool hasCxxDtor = cls->hasCxxDtor();
+    bool hasCxxCtor = cxxConstruct && cls->hasCxxCtor();//cls是否有c++构造方法 ctor = constructor
+    bool hasCxxDtor = cls->hasCxxDtor();//cls是否有c++销毁方法 dtor = destructor
     bool fast = cls->canAllocNonpointer();
     size_t size;
 
@@ -7990,12 +7990,12 @@ _class_createInstanceFromZone(Class cls, size_t extraBytes, void *zone,
         return nil;
     }
 
-    if (!zone && fast) {
+    if (!zone && fast) {//创建非指针型ISA
         obj->initInstanceIsa(cls, hasCxxDtor);
     } else {
         // Use raw pointer isa on the assumption that they might be
         // doing something weird with the zone or RR.
-        obj->initIsa(cls);
+        obj->initIsa(cls);//创建原始ISA
     }
 
     if (fastpath(!hasCxxCtor)) {

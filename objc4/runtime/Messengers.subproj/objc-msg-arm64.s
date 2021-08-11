@@ -534,6 +534,8 @@ _objc_debug_taggedpointer_classes:
 	and	x10, x0, #0x7		// x10 = small tag
 	asr	x11, x0, #55		// x11 = large tag with 1s filling the top (because bit 63 is 1 on a tagged pointer)
 	cmp	x10, #7		// tag == 7?
+    //CSEL X7, X2, X0, EQ ; if (cond == true) X7 = X2, else X7 = X0
+
 	csel	x12, x11, x10, eq	// x12 = index in tagged pointer classes array, negative for extended tags.
 					// The extended tag array is placed immediately before the basic tag array
 					// so this looks into the right place either way. The sign extension done
@@ -553,11 +555,11 @@ _objc_debug_taggedpointer_classes:
 
 	cmp	p0, #0			// nil check and tagged pointer check
 #if SUPPORT_TAGGED_POINTERS
-	b.le	LNilOrTagged		//  (MSB tagged pointer looks negative)
+	b.le	LNilOrTagged		//  如果 x0 的值==0，即CPSR寄存器的 Z 标识==1，跳转标签判断是否 self 是否为 nil 或者是 tagged pointer 类型
 #else
 	b.eq	LReturnZero
 #endif
-	ldr	p13, [x0]		// p13 = isa
+	ldr	p13, [x0]		// x13 = isa，把 self 指针赋值到 x13，self 是 objc_object 结构体，结构体第一个属性是 isa，所以这里 x13 指向了 isa
 	GetClassFromIsa_p16 p13, 1, x0	// p16 = class
 LGetIsaDone:
 	// calls imp or objc_msgSend_uncached
